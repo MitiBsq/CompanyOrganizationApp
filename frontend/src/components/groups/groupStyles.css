@@ -1,0 +1,284 @@
+@import url('https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css');
+
+.mainContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 70%;
+  max-height: 700px;
+  min-height: 700px;
+  margin: auto;
+}
+
+.addData {
+  display: flex;
+  gap: 5px;
+  margin-top: 10%;
+  margin-bottom: 8%;
+}
+
+.groupList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.groupList h4 {
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: 2em;
+}
+
+/* Group Tree */
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.treePanel {
+  display: flex;
+  max-width: 50%;
+  max-height: 70%;
+  background-color: aliceblue;
+  height: 70%;
+  margin: 150px auto;
+  box-shadow: 3px 5px 7px rgba(0, 0, 0, 0.5);
+  border: 3px solid white;
+  margin-bottom: 2rem;
+  overflow: auto;
+}
+
+svg {
+  padding: 10%;
+  overflow: visible;
+  display: block;
+  width: 100%;
+}
+
+/* Group List */
+.list-group {
+  width: 80%;
+}
+
+.list-group-item {
+  text-align: center;
+}
+
+/* Group Details */
+.groupDetails {
+  display: flex;
+  justify-content: center;
+  width: 80%;
+  margin: auto;
+  margin-top: 5em;
+}
+
+.memberList {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5em
+}
+
+.mainMember {
+  position: relative;
+  left: -5px;
+  border: 0ch;
+  background-color: transparent;
+  padding: 0%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 500;
+}
+
+.outsider {
+  position: relative;
+  left: -5px;
+  border: 0ch;
+  background-color: transparent;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 500;
+  padding: 0%;
+  opacity: 0.8;
+}
+
+.cardStyle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1px solid rgba(0,0,0,.125);
+  border-radius: 0.25rem;
+}
+
+.listText {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+  font-size: larger;
+}
+
+/* Edit Group */
+.editGroupPanel {
+  display: block;
+  max-width: 50%;
+  max-height: 70%;
+  background-color: aliceblue;
+  height: 70%;
+  margin: 150px auto;
+  box-shadow: 3px 5px 7px rgba(0, 0, 0, 0.5);
+  border: 3px solid white;
+}
+
+.editNamePlace {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: auto;
+  margin-top: 1.3em;
+}
+
+.theName {
+  display: block;
+  padding: 0.375rem 0.75rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  background-clip: padding-box;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 0.25rem;
+  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  background-color: transparent;
+  border: 0ch;
+  text-align: center;
+  width: 68%;
+  font-size: larger;
+  margin-left: 2em;
+}
+
+.theName:focus{
+  outline: 1px gray solid;
+}
+
+.editMembers{
+  margin-top: 5em;
+}
+
+.editMembers input {
+  display: flex;
+  flex-direction: column;
+}
+
+.editMembers .form-control {
+  width: 50%;
+  margin: auto
+}
+
+.searchList {
+  display: flex;
+  overflow: auto;
+  justify-content: center;
+  flex-direction: row;
+  width: 100%;
+  margin: auto;
+  margin-top: 1.5em;
+  gap: 2em;
+  background-color: transparent;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 500;
+}
+
+.searchList button {
+  border: 0ch;
+  background-color: transparent;
+  padding: 0%;
+}
+
+.checkMark {
+  display: inline-block;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  padding: 0.375rem 0.75rem;
+  size: 1rem;
+  border-radius: 0.25rem;
+  transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+  background-color: transparent;
+  border: 0ch;
+}
+
+.editChildGroups {
+  margin-top: 3em;
+}
+
+.editChildGroups .form-control {
+  width: 50%;
+  margin: auto
+}
+
+/* Delete Group */
+.deleteGroupPanel {
+  display: block;
+  max-width: 30%;
+  max-height: 20%;
+  background-color: aliceblue;
+  height: 20%;
+  margin: 250px auto;
+  box-shadow: 3px 5px 7px rgba(0, 0, 0, 0.5);
+  border: 3px solid white;
+}
+
+.advertiseMessage {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  gap: 2em;
+  margin: 1.3em auto;
+}
+
+/* Create Group */
+.addPanelGroup {
+  display: block;
+  max-width: 30%;
+  max-height: 22%;
+  background-color: aliceblue;
+  height: 22%;
+  margin: 310px auto;
+  box-shadow: 3px 5px 7px rgba(0, 0, 0, 0.5);
+  border: 3px solid white;
+}
+
+.addBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.2em;
+}
+
+.addBlock h1 {
+  text-align: center;
+}
+
+.addBlock .form-control {
+  width: 70%;
+  align-self: center;
+}
+
+.addBlock .btn {
+  width: 70%;
+  align-self: center;
+}
