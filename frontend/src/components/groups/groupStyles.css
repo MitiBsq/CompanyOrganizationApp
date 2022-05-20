@@ -112,7 +112,7 @@ svg {
   word-wrap: break-word;
   background-color: #fff;
   background-clip: border-box;
-  border: 1px solid rgba(0,0,0,.125);
+  border: 1px solid rgba(0, 0, 0, .125);
   border-radius: 0.25rem;
 }
 
@@ -153,7 +153,7 @@ svg {
   -moz-appearance: none;
   appearance: none;
   border-radius: 0.25rem;
-  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
   background-color: transparent;
   border: 0ch;
   text-align: center;
@@ -162,11 +162,11 @@ svg {
   margin-left: 2em;
 }
 
-.theName:focus{
+.theName:focus {
   outline: 1px gray solid;
 }
 
-.editMembers{
+.editMembers {
   margin-top: 5em;
 }
 

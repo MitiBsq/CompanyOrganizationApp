@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { UserContext } from '../users/UserContext';
 
 export default function CreateGroup(props) {
   //For keeping track with the data (controlled-component)
@@ -8,18 +9,25 @@ export default function CreateGroup(props) {
     setnewGroup(e.target.value);
   }
 
+  const { loggedIn } = useContext(UserContext);
+
   //Creating the group
   const handleClick = async (e) => {
     //If there is data inserted in the input(for not sending empty data)
     if (newGroup.trim() !== '') {
       try {
-        const group_name = { newGroup }
+        const body = {
+          group_name: newGroup,
+          email: loggedIn.email
+        }
         const respone = await fetch('http://localhost:5000/api/group', {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(group_name)
+          body: JSON.stringify(body)
         });
-        props.showTheBox(true);
+        if (respone.status === 200) {
+          props.showTheBox(true);
+        }
       } catch (error) {
         console.error(error.message);
       }

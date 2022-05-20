@@ -18,9 +18,11 @@ export default function DeletePersons(props) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ body })
             });
-            props.updateList();
-            props.showTheBox();
-            props.notify();
+            if (respone.status === 200) {
+                props.updateList();
+                props.showTheBox();
+                props.notify();
+            }
         } catch (error) {
             console.error(error.message);
         }

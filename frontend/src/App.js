@@ -12,8 +12,11 @@ import { UserContext } from './components/users/UserContext';
 import { isLoggedIn } from './components/users/isLoggedIn';
 
 function App() {
-  //For keeping track if the user is logged or not 
-  const [loggedIn, setLoggedIn] = useState(false);
+  //For keeping track if the user is logged or not and using the email to get his unique data
+  const [loggedIn, setLoggedIn] = useState({
+    value: false,
+    email: null
+  });
   //For the welcome message(just after the user logged)
   const [welcome, setWelcome] = useState(false);
 
@@ -22,7 +25,7 @@ function App() {
 
   //to check if the user just logged or not 
   useEffect(() => {
-    if (loggedIn) {
+    if (loggedIn.value) {
       setWelcome(true);
     }
   }, [loggedIn]);
@@ -32,7 +35,10 @@ function App() {
     if (localStorage.jwtToken) {
       (async () => {
         const validToken = await isLoggedIn();
-        validToken === true ? setLoggedIn(true) : setLoggedIn(false);
+        validToken ? setLoggedIn({
+          value: true,
+          email: validToken
+        }) : setLoggedIn({ value: false, email: null });
       })();
     }
   }, []);
@@ -41,16 +47,16 @@ function App() {
     <div>
       <Router>
         <UserContext.Provider value={providerValue}>
-          {loggedIn && <Navbar />}
+          {loggedIn.value && <Navbar />}
           <Routes>
-            <Route path='/' element={loggedIn ? <Navigate to='/home' /> : <Navigate to='/logIn' />}></Route>
-            <Route path='/home' element={loggedIn ? <Home welcome={welcome} setWelcome={() => setWelcome(false)} /> : <Navigate to='/logIn' />}></Route>
-            <Route path='/logIn' element={loggedIn ? <Navigate to='/home' /> : <LogIn />}></Route>
-            <Route path='/SignIn' element={loggedIn ? <Navigate to='/home' /> : <SignIn />}></Route>
+            <Route path='/' element={loggedIn.value ? <Navigate to='/home' /> : <Navigate to='/logIn' />}></Route>
+            <Route path='/home' element={loggedIn.value ? <Home welcome={welcome} setWelcome={() => setWelcome(false)} /> : <Navigate to='/logIn' />}></Route>
+            <Route path='/logIn' element={loggedIn.value ? <Navigate to='/home' /> : <LogIn />}></Route>
+            <Route path='/SignIn' element={loggedIn.value ? <Navigate to='/home' /> : <SignIn />}></Route>
             <Route path='/ForgotPassword' element={<ForgotPassword />}></Route>
-            <Route path='/MainGroups' element={loggedIn ? <MainGroups /> : <Navigate to='/logIn' />}></Route>
-            <Route path='/MainPersons' element={loggedIn ? <MainPersons /> : <Navigate to='/logIn' />}></Route>
-            <Route path='/group/:id' element={loggedIn ? <GroupDetails /> : <Navigate to='/logIn' />}></Route>
+            <Route path='/MainGroups' element={loggedIn.value ? <MainGroups /> : <Navigate to='/logIn' />}></Route>
+            <Route path='/MainPersons' element={loggedIn.value ? <MainPersons /> : <Navigate to='/logIn' />}></Route>
+            <Route path='/group/:id' element={loggedIn.value ? <GroupDetails /> : <Navigate to='/logIn' />}></Route>
           </Routes>
         </UserContext.Provider>
       </Router>

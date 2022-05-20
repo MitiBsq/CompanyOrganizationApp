@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { UserContext } from '../users/UserContext';
 
 export default function EditGroup(props) {
     //For showing the user that the group name has been successfully changed 
@@ -8,6 +9,9 @@ export default function EditGroup(props) {
     function handleGroupName(e) {
         setGroupName(e.target.value);
     }
+
+    //Using it for getting the unique data of the user
+    const { loggedIn } = useContext(UserContext);
 
     //Editing the group name (submiting)
     const handleClick = async () => {
@@ -40,8 +44,14 @@ export default function EditGroup(props) {
     useEffect(() => {
         const getPersonsAndGroups = async () => {
             try {
-                const responsePersons = await fetch('http://localhost:5000/api/persons')
-                const responseGroups = await fetch(`http://localhost:5000/api/group/${props.param.split('-')[1]}/availableGroups`)
+                const responsePersons = await fetch('http://localhost:5000/api/persons', {
+                    method: 'GET',
+                    headers: { email: loggedIn.email }
+                });
+                const responseGroups = await fetch(`http://localhost:5000/api/group/${props.param.split('-')[1]}/availableGroups`, {
+                    method: 'GET',
+                    headers: { email: loggedIn.email }
+                });
                 const jsonDataPersons = await responsePersons.json();
                 const jsonDataGroups = await responseGroups.json();
                 setAllData({
@@ -53,7 +63,7 @@ export default function EditGroup(props) {
             }
         }
         getPersonsAndGroups();
-    }, [props.param]);
+    }, [props.param, loggedIn]);
 
     //Function for adding/removing a member
     const addRemovePerson = async (doWhat, person_id) => {
@@ -66,7 +76,9 @@ export default function EditGroup(props) {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(body)
                 });
-                props.update();
+                if (respone.status === 200) {
+                    props.update();
+                }
             } catch (error) {
                 console.error(error.message);
             }
@@ -79,7 +91,9 @@ export default function EditGroup(props) {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(body)
                 });
-                props.update();
+                if (respone.status === 200) {
+                    props.update();
+                }
             } catch (error) {
                 console.error(error.message);
             }
@@ -97,7 +111,9 @@ export default function EditGroup(props) {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(body)
                 });
-                props.update();
+                if (respone.status === 200) {
+                    props.update();
+                }
             } catch (error) {
                 console.error(error.message);
             }
@@ -108,7 +124,9 @@ export default function EditGroup(props) {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ child_group_id })
                 });
-                props.update();
+                if (respone.status === 200) {
+                    props.update();
+                }
             } catch (error) {
                 console.error(error.message);
             }

@@ -19,7 +19,7 @@ export default function MainGroups() {
         justCreated === true && notifySucces();
     }
 
-    const notifySucces = (name) => {
+    const notifySucces = () => {
         toast.success(`Group created!`, {
             position: "top-right",
             autoClose: 5000,

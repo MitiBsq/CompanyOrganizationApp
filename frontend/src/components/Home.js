@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
+import { UserContext } from './users/UserContext';
 import './mainStyles.css';
 
 export default function Home(props) {
@@ -16,6 +17,8 @@ export default function Home(props) {
         noPerson: null,
         noGroup: null,
     })
+
+    const { loggedIn } = useContext(UserContext);
 
     useEffect(() => {
         const notifySucces = (name) => {
@@ -38,20 +41,31 @@ export default function Home(props) {
 
         const getLastPersonGroup = async () => {
             try {
-                const responePerson = await fetch('http://localhost:5000/api/persons/infoLast');
-                const responeGroup = await fetch('http://localhost:5000/api/groups/infoLast');
+                const responePerson = await fetch('http://localhost:5000/api/persons/infoLast', {
+                    method: "GET",
+                    headers: { email: loggedIn.email }
+                });
+                const responeGroup = await fetch('http://localhost:5000/api/groups/infoLast', {
+                    method: "GET",
+                    headers: { email: loggedIn.email }
+                });
                 const jsonDataPerson = await responePerson.json();
                 const jsonDataGroup = await responeGroup.json();
                 if (jsonDataPerson === 'No Persons registered in the database') {
                     setDetails(prev => {
-                        return { ...prev, noPerson: jsonDataPerson }
+                        return { ...prev, noPerson: jsonDataPerson };
                     });
                 } else {
                     setDetails(prev => {
+                        //Converting ISO date to yyyy/mm/dd date type
+                        const date = new Date(jsonDataPerson.date_created);
+                        const year = date.getFullYear();
+                        const month = date.getMonth();
+                        const dt = date.getDate();
                         return {
                             ...prev, lastPerson: {
                                 name: jsonDataPerson.name,
-                                data: jsonDataPerson.date_created.split('T')[0]
+                                data: year + '-' + month + '-' + dt
                             }, noPerson: null
                         }
                     });
@@ -62,20 +76,25 @@ export default function Home(props) {
                     });
                 } else {
                     setDetails(prev => {
+                        //Converting ISO date to yyyy/mm/dd date type
+                        const date = new Date(jsonDataPerson.date_created);
+                        const year = date.getFullYear();
+                        const month = date.getMonth();
+                        const dt = date.getDate();
                         return {
                             ...prev, lastGroup: {
                                 name: jsonDataGroup.group_name,
-                                data: jsonDataGroup.date_created.split('T')[0]
+                                data: year + '-' + month + '-' + dt
                             }, noGroup: null
                         }
                     });
                 }
             } catch (error) {
-                console.error(error.message)
+                console.error(error.message);
             }
         }
         getLastPersonGroup();
-    }, [props]);
+    }, [props, loggedIn]);
 
     return (
         <div>

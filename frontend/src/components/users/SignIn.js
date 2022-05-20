@@ -36,7 +36,7 @@ export default function SignIn() {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-            onClick: () => setLoggedIn(true)
+            onClick: () => setLoggedIn({ value: true, email: newUser.email })
         });
     }
 
@@ -75,10 +75,11 @@ export default function SignIn() {
                         const first_name = newUser.first_name;
                         const last_name = newUser.last_name;
                         const job_title = newUser.job_title;
+                        const email = newUser.email;
                         const respone = await fetch('http://localhost:5000/api/persons', {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ first_name, last_name, job_title })
+                            body: JSON.stringify({ first_name, last_name, job_title, email })
                         });
                         if (respone.status !== 200) {
                             console.error("failed to create a user");

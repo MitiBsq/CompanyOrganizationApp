@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import EditPerson from './EditPerson ';
 import SignUpPerson from './SignUpPerson';
 import { ToastContainer, toast } from 'react-toastify';
 import './personsStyles.css';
 import DeletePersons from './DeletePersons';
+import { UserContext } from '../users/UserContext';
 
 export default function MainPersons() {
     //To store the extracted data
@@ -24,11 +25,16 @@ export default function MainPersons() {
     });
     const [showNewPerson, setShowNewPerson] = useState(false);
 
+    const { loggedIn } = useContext(UserContext);
+
     //Fetching the data from the database when the update is called(and the first time when rendered)
     useEffect(() => {
         const getData = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/persons');
+                const response = await fetch('http://localhost:5000/api/persons', {
+                    method: 'GET',
+                    headers: { email: loggedIn.email }
+                });
                 const jsonData = await response.json();
                 setData(jsonData);
             } catch (error) {
@@ -36,7 +42,7 @@ export default function MainPersons() {
             }
         }
         getData();
-    }, [update]);
+    }, [update, loggedIn]);
 
     //Delete a specific person from the database(single)
     const deletePerson = async (id) => {
@@ -44,8 +50,10 @@ export default function MainPersons() {
             const response = await fetch(`http://localhost:5000/api/persons/${id}`, {
                 method: 'DELETE'
             });
-            updateList();
-            notifySucces('Delete succeful');
+            if (response.status === 200) {
+                updateList();
+                notifySucces('Delete succeful');
+            }
         } catch (error) {
             console.error(error.message);
         }

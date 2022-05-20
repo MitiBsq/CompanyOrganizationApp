@@ -5,9 +5,10 @@ const { checkMembers, checkGroups, getChildrenGroups } = require('../helper/grou
 //Create a new group
 router.post('/group', async (req, res) => {
     try {
-        const value = req.body.newGroup;
-        const newGroup = await pool.query('INSERT INTO groups VALUES (DEFAULT, $1, CURRENT_DATE) RETURNING *', [value]);
-        res.json(newGroup.rows);
+        const group_name = req.body.group_name;
+        const email = req.body.email;
+        const newGroup = await pool.query('INSERT INTO groups(group_name, createdby) VALUES ($1, $2) RETURNING *', [group_name, email]);
+        res.status(200).json(newGroup.rows);
     } catch (error) {
         console.error(error.message);
     }
@@ -16,19 +17,18 @@ router.post('/group', async (req, res) => {
 //Get all groups
 router.get('/group', async (req, res) => {
     try {
-        const getGroups = await pool.query('Select group_name, group_id FROM groups ORDER BY date_created, group_id');
-        res.json(getGroups.rows);
+        const getGroups = await pool.query('Select group_name, group_id FROM groups WHERE createdby = $1 ORDER BY date_created, group_id', [req.headers.email]);
+        res.status(200).json(getGroups.rows);
     } catch (error) {
         console.error(error.message);
     }
 });
 
-
 //Get the groups that dont have a parent(this means the group can be added) without the group that makes the request
 router.get('/group/:id/availableGroups', async (req, res) => {
     try {
-        const getGroups = await pool.query('SELECT * FROM GROUPS WHERE (parent_group IS NULL OR parent_group = $1) AND NOT group_id = $1', [req.params.id]);
-        res.json(getGroups.rows);
+        const getGroups = await pool.query('SELECT * FROM groups WHERE (parent_group IS NULL OR parent_group = $1) AND NOT group_id = $1 AND createdby=$2', [req.params.id, req.headers.email]);
+        res.status(200).json(getGroups.rows);
     } catch (error) {
         console.error(error.message);
     }
@@ -39,7 +39,7 @@ router.put('/group/:id', async (req, res) => {
     try {
         const group_name = req.body.groupName;
         const updateGroup = await pool.query('UPDATE groups SET group_name = $1, date_updated = CURRENT_DATE WHERE group_id = $2 RETURNING *', [group_name, req.params.id]);
-        res.json("Name Changed");
+        res.status(200).json("Name Changed");
     } catch (error) {
         console.error(error.message);
     }
@@ -49,7 +49,7 @@ router.put('/group/:id', async (req, res) => {
 router.delete('/group/:id', async (req, res) => {
     try {
         const deleteGroup = await pool.query('DELETE FROM groups WHERE group_id = $1', [req.params.id]);
-        res.json('Person deleted!');
+        res.status(200).json('Person deleted!');
     } catch (error) {
         console.error(error.message);
     }
@@ -63,7 +63,7 @@ router.post('/group/:id/addPerson', async (req, res) => {
         const check = await checkMembers(person_id, group_id);
         if (check) {
             const addPerson = await pool.query('INSERT INTO group_members VALUES($1, $2, CURRENT_DATE, $3) RETURNING *', [group_id, person_id, unique_key]);
-            res.json(addPerson.rows[0]);
+            res.status(200).json(addPerson.rows[0]);
         } else {
             res.json('This Person is already a member');
         }
@@ -77,7 +77,7 @@ router.delete('/group/:id/removeMember', async (req, res) => {
     try {
         const { unique_key } = req.body;
         const removeMember = await pool.query('DELETE FROM group_members WHERE check_unique = $1', [unique_key]);
-        res.json('Person removed!');
+        res.status(200).json('Person removed!');
     } catch (error) {
         console.error(error.message);
     }
@@ -90,7 +90,7 @@ router.post('/group/:id/addGroup', async (req, res) => {
         const check = await checkGroups(parent_group_id, child_group_id);
         if (check) {
             const addGroup = await pool.query('UPDATE groups SET parent_group=$1 WHERE group_id=$2', [parent_group_id, child_group_id]);
-            res.json(addGroup.rows[0]);
+            res.status(200).json(addGroup.rows[0]);
         } else {
             res.json('This Group is already a child group');
         }
@@ -104,7 +104,7 @@ router.delete('/group/:id/removeGroup', async (req, res) => {
     try {
         const { child_group_id } = req.body;
         const removeGroup = await pool.query('UPDATE groups SET parent_group = DEFAULT WHERE group_id=$1', [child_group_id]);
-        res.json('Group removed!');
+        res.status(200).json('Group removed!');
     } catch (error) {
         console.error(error.message);
     }
@@ -126,11 +126,11 @@ router.get('/group/:id', async (req, res) => {
                     group_id: getGroupChildrenGroups.rows[i].group_id,
                     name: getGroupChildrenGroups.rows[i].group_name
                 });
-                const element = await getChildrenGroups(getGroupChildrenGroups.rows[i].group_id)
+                const element = await getChildrenGroups(getGroupChildrenGroups.rows[i].group_id);
                 theChildrenGroups.push(...element);
             }
             for (let i = 0; i < theChildrenGroups.length; ++i) {
-                getTheId.push(theChildrenGroups[i].group_id)
+                getTheId.push(theChildrenGroups[i].group_id);
             }
         }
         //Get all the members and child members
@@ -140,7 +140,7 @@ router.get('/group/:id', async (req, res) => {
             childMembers: await getGroupChildrenMembers.rows,
             childGroups: await theChildrenGroups
         }
-        res.json(data);
+        res.status(200).json(data);
     } catch (error) {
         console.error(error.message);
     }
@@ -149,9 +149,9 @@ router.get('/group/:id', async (req, res) => {
 //Select last group created/updated
 router.get('/groups/infoLast', async (req, res) => {
     try {
-        const getData = await pool.query("SELECT group_name, date_created FROM groups ORDER BY date_created DESC, group_id DESC LIMIT 1");
+        const getData = await pool.query("SELECT group_name, date_created FROM groups WHERE createdby=$1 ORDER BY date_created DESC, group_id DESC LIMIT 1", [req.headers.email]);
         if (getData.rows.length > 0) {
-            res.json(getData.rows[0]);
+            res.status(200).json(getData.rows[0]);
         } else {
             res.json('No Groups registered in the database');
         }

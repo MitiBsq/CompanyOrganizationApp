@@ -6,8 +6,9 @@ export async function isLoggedIn() {
       headers: { token: localStorage.jwtToken }
     });
     const jsonResponse = await response.json();
-    if (jsonResponse) {
-      return true;
+    if (response.status === 200) {
+      //If the status is 200 this means the token is good and we send back the email
+      return jsonResponse;
     }
     return false;
   } catch (error) {

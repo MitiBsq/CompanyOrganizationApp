@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { UserContext } from '../users/UserContext';
 import './personsStyles.css';
 
 export default function SignUpPerson(props) {
@@ -14,18 +15,24 @@ export default function SignUpPerson(props) {
     setNewPerson({ ...newPerson, [name]: value });
   }
 
+  const { loggedIn } = useContext(UserContext);
+
   //Creating the person
   const handleClick = async (e) => {
     //If there is data inserted in the input(for not sending empty data)
     if (newPerson.first_name.trim() !== '' || newPerson.last_name.trim() !== '' || newPerson.job_title.trim() !== '') {
       try {
+        const { first_name, last_name, job_title } = newPerson;
+        const email = loggedIn.email
         const respone = await fetch('http://localhost:5000/api/persons', {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newPerson)
+          body: JSON.stringify({ first_name, last_name, job_title, email })
         });
-        props.updateList();
-        props.showPanelNewPerson();
+        if (respone.status === 200) {
+          props.updateList();
+          props.showPanelNewPerson();
+        }
       } catch (error) {
         console.error(error.message);
       }

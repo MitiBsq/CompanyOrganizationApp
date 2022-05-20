@@ -12,7 +12,7 @@ router.post('/users/SignIn', async (req, res) => {
         if (checkEmail) {
             const hashedPassword = await bcrypt.hash(password, 10);
             const response = await pool.query('INSERT INTO users VALUES($1, $2, $3, $4)', [email, first_name, last_name, hashedPassword]);
-            res.json('Account Created!');
+            res.status(200).json('Account Created!');
         } else {
             res.json('The email you inserted is already used!');
         }
@@ -51,21 +51,22 @@ router.post('/users/forgotPass', async (req, res) => {
             if (check) {
                 res.json('This Email doesnt have an account asociated!');
             } else {
-                res.json('Email is Good');
+                res.status(200).json('Email is Good');
             }
         } else {
             const hashedPassword = await bcrypt.hash(newPassword, 10);
             const newPass = await pool.query('UPDATE users SET password = $1 WHERE email = $2', [hashedPassword, email]);
-            res.json('Password updated');
+            res.status(200).json('Password updated');
         }
     } catch (error) {
         console.error(error.message);
     }
 });
 
+//Check if the user was logged in the last 12 hours
 router.get("/checkLogin", checkLogin, async (req, res) => {
     try {
-        res.json(true);
+        res.status(200).json(req.user.email);
     } catch (error) {
         console.error(error.message);
         res.status(400).send("Server Error");

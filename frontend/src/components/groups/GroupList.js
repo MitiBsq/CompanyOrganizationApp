@@ -1,14 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { UserContext } from '../users/UserContext';
 
 export default function GroupList(props) {
     const [groups, setGroups] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const { loggedIn } = useContext(UserContext);
+
     //Fetching all the groups from the database
     useEffect(() => {
         const getGroups = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/group')
+                const response = await fetch('http://localhost:5000/api/group', {
+                    method: 'GET',
+                    headers: { email: loggedIn.email }
+                })
                 const jsonData = await response.json();
                 setGroups(jsonData);
                 setLoading(false);
@@ -17,7 +24,7 @@ export default function GroupList(props) {
             }
         }
         getGroups();
-    }, [props.updateList]);
+    }, [props.updateList, loggedIn]);
 
     return (
         <div className="list-group">

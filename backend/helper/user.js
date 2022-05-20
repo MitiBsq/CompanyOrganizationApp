@@ -18,10 +18,12 @@ const checkUsersEmail = async (email) => {
 //MiddleWare function for checking if the user was logged in recently
 function checkLogin(req, res, next) {
     const token = req.header("token");
+    //If the user logged without remember me checked
     if (!token) {
         return res.status(500).json({ message: "You are not Logged in" });
     }
     const user = jwt.verify(token, process.env.SECRET_TOKEN);
+    //We take the token payload to get the email
     req.user = user;
     next();
 }

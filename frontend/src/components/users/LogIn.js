@@ -54,7 +54,10 @@ export default function LogIn() {
         });
         const token = await response.json();
         if (response.status === 200) {
-          setLoggedIn(true);
+          setLoggedIn({
+            value: true,
+            email: user.email
+          });
           if (user.rememberMe) {
             //If the user checked the remember me box we use jwt
             localStorage.setItem("jwtToken", token);
