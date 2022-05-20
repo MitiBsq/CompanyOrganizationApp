@@ -37,7 +37,7 @@ export default function GroupDetails() {
     useEffect(() => {
         const takeData = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/api/group/${params.id.split('-')[1]}`);
+                const response = await fetch(`http://localhost:5000/api/group/${params.id.split('-')[params.id.split('-').length - 1]}`);
                 setDetails(await response.json());
             } catch (error) {
                 console.error(error.message)

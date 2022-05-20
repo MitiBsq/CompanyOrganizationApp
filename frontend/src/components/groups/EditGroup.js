@@ -4,8 +4,16 @@ import { UserContext } from '../users/UserContext';
 export default function EditGroup(props) {
     //For showing the user that the group name has been successfully changed 
     const [colorSucces, setColorSucces] = useState('dark');
+    let name = '';
+    //Filtering the name
+    for (let i = 0; i < props.param.split('-').length - 1; ++i) {
+        name += props.param.split('-')[i];
+        if (i !== props.param.split('-').length - 2) {
+            name += '-';
+        }
+    }
     //For keeping track of the group name before, during and after the edit is completed
-    const [groupName, setGroupName] = useState(props.param.split('-')[0]);
+    const [groupName, setGroupName] = useState(name);
     function handleGroupName(e) {
         setGroupName(e.target.value);
     }
@@ -15,12 +23,12 @@ export default function EditGroup(props) {
 
     //Editing the group name (submiting)
     const handleClick = async () => {
-        if (groupName.trim() === '' || groupName.trim() === props.param.split('-')[0]) {
-            setGroupName(props.param.split('-')[0]);
+        if (groupName.trim() === '' || groupName.trim() === name) {
+            setGroupName(name);
         } else {
             try {
                 const body = { groupName }
-                const response = await fetch(`http://localhost:5000/api/group/${props.param.split('-')[1]}`, {
+                const response = await fetch(`http://localhost:5000/api/group/${groupId}`, {
                     method: "PUT",
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(body)
@@ -41,6 +49,9 @@ export default function EditGroup(props) {
         allPersons: [],
         allGroups: []
     });
+
+    const groupId = props.param.split('-')[props.param.split('-').length - 1];
+
     useEffect(() => {
         const getPersonsAndGroups = async () => {
             try {
@@ -48,7 +59,7 @@ export default function EditGroup(props) {
                     method: 'GET',
                     headers: { email: loggedIn.email }
                 });
-                const responseGroups = await fetch(`http://localhost:5000/api/group/${props.param.split('-')[1]}/availableGroups`, {
+                const responseGroups = await fetch(`http://localhost:5000/api/group/${groupId}/availableGroups`, {
                     method: 'GET',
                     headers: { email: loggedIn.email }
                 });
@@ -63,15 +74,15 @@ export default function EditGroup(props) {
             }
         }
         getPersonsAndGroups();
-    }, [props.param, loggedIn]);
+    }, [groupId, loggedIn]);
 
     //Function for adding/removing a member
     const addRemovePerson = async (doWhat, person_id) => {
         if (doWhat === '+') {
             try {
-                const group_id = props.param.split('-')[1];
+                const group_id = groupId;
                 const body = { person_id, group_id }
-                const respone = await fetch(`http://localhost:5000/api/group/${props.param.split('-')[1]}/addPerson`, {
+                const respone = await fetch(`http://localhost:5000/api/group/${groupId}}/addPerson`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(body)
@@ -84,9 +95,9 @@ export default function EditGroup(props) {
             }
         } else {
             try {
-                const unique_key = 'gr' + props.param.split('-')[1] + '-' + person_id;
+                const unique_key = 'gr' + groupId + '-' + person_id;
                 const body = { unique_key }
-                const respone = await fetch(`http://localhost:5000/api/group/${props.param.split('-')[1]}/removeMember`, {
+                const respone = await fetch(`http://localhost:5000/api/group/${groupId}/removeMember`, {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(body)
@@ -104,9 +115,9 @@ export default function EditGroup(props) {
     const addRemoveGroup = async (doWhat, child_group_id) => {
         if (doWhat === '+') {
             try {
-                const parent_group_id = props.param.split('-')[1];
+                const parent_group_id = groupId;
                 const body = { parent_group_id, child_group_id }
-                const respone = await fetch(`http://localhost:5000/api/group/${props.param.split('-')[1]}/addGroup`, {
+                const respone = await fetch(`http://localhost:5000/api/group/${groupId}/addGroup`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(body)
@@ -119,7 +130,7 @@ export default function EditGroup(props) {
             }
         } else {
             try {
-                const respone = await fetch(`http://localhost:5000/api/group/${props.param.split('-')[1]}/removeGroup`, {
+                const respone = await fetch(`http://localhost:5000/api/group/${groupId}/removeGroup`, {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ child_group_id })
