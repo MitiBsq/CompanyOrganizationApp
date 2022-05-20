@@ -18,7 +18,7 @@ export default function DeleteGroup(props) {
             const respone = await fetch(`http://localhost:5000/api/group/${props.param.split('-')[1]}`, {
                 method: 'DELETE'
             });
-            if (respone.status = 200) {
+            if (respone.status === 200) {
                 props.update();
                 //Sending the user back to the group list page
                 navigate('/MainGroups');

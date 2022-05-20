@@ -77,9 +77,9 @@ export default function Home(props) {
                 } else {
                     setDetails(prev => {
                         //Converting ISO date to yyyy/mm/dd date type
-                        const date = new Date(jsonDataPerson.date_created);
+                        const date = new Date(jsonDataGroup.date_created);
                         const year = date.getFullYear();
-                        const month = date.getMonth();
+                        const month = date.getMonth().length > 1 ? date.getMonth() : '0' + date.getMonth();
                         const dt = date.getDate();
                         return {
                             ...prev, lastGroup: {

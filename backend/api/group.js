@@ -49,7 +49,7 @@ router.put('/group/:id', async (req, res) => {
 router.delete('/group/:id', async (req, res) => {
     try {
         const deleteGroup = await pool.query('DELETE FROM groups WHERE group_id = $1', [req.params.id]);
-        res.status(200).json('Person deleted!');
+        res.status(200).json('Group deleted!');
     } catch (error) {
         console.error(error.message);
     }
