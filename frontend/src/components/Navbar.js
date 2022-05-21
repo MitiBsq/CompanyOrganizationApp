@@ -17,7 +17,10 @@ export default function Navbar() {
     const navigate = useNavigate();
 
     const logOut = () => {
-        setLoggedIn(false);
+        setLoggedIn({
+            value: false,
+            email: null
+        });
         localStorage.removeItem('jwtToken');
     }
 

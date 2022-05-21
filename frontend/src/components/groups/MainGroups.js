@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import './groupStyles.css';
 
 export default function MainGroups() {
-    //For showing the create model panel for one of the options 
+    //For showing the create-group panel
     const [openBox, setOpenBox] = useState(false);
 
     //For 'alerting' React to update the interface
